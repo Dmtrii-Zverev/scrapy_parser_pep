@@ -59,3 +59,35 @@ dev = [
     "flake8>=4.0.1",
     "ruff>=0.15.15",
 ]
+
+[tool.ruff]
+src = ["pep_parse"]
+
+exclude = [
+    "tests",
+    "pep_parse/settings.py",
+    "pep_parse/middlewares.py",
+    "__init__.py",
+]
+
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "W", "C90"]
+
+ignore = ["D100"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.pytest.ini_options]
+pythonpath = [".", "pep_parse"]
+
+norecursedirs = ["env/*"]
+
+addopts = "-vv -p no:cacheprovider --disable-warnings"
+
+log_level = "ERROR"
+
+testpaths = ["tests/"]
+python_files = ["test_*.py"]

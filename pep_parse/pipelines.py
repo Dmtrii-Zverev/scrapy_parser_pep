@@ -24,4 +24,3 @@ class PepParsePipeline:
             writer.writerow(('Статус', 'Количество'))
             writer.writerows(zip(self.counts, self.counts.values()))
             writer.writerow(('Total', sum(self.counts.values())))
-

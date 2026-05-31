@@ -10,19 +10,18 @@ class PepSpider(scrapy.Spider):
 
     def parse(self, response):
         # получаем все строки вложенные в тег <tbody>.
-        rows = response.css('section#pep-content section#index-by-category tbody tr')
+        rows = response.css(
+            'section#pep-content section#index-by-category tbody tr'
+        )
         for row in rows:
             status, number, title, authors, other = row.css('td')
             next_page = number.css('a')[0]
             if next_page:
-                # data = response.follow(next_page, callback=self.parse_pep)
-                # # добавляем в возвращаемый словарь номер pep в виде целого числа.
-                # data['number'] = int(number.css('a::text').get())
                 yield response.follow(next_page, callback=self.parse_pep)
 
     def parse_pep(self, response):
         content = response.css('section#pep-page-section section#pep-content')
-        number, name =  content.css('h1::text').get().strip().split(' – ')
+        number, name = content.css('h1::text').get().strip().split(' – ')
         status = content.css('dl dt:contains("Status") + dd abbr::text').get()
         data = {
             'number': number,
