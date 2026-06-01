@@ -1,12 +1,13 @@
 import scrapy
 
 from pep_parse.items import PepParseItem
+from pep_parse.constants import PEP_DOMAIN
 
 
 class PepSpider(scrapy.Spider):
     name = 'pep'
-    allowed_domains = ['peps.python.org']
-    start_urls = ['https://peps.python.org/']
+    allowed_domains = [PEP_DOMAIN]
+    start_urls = [f'https://{PEP_DOMAIN}/']
 
     def parse(self, response):
         # получаем все строки вложенные в тег <tbody>.
@@ -22,9 +23,10 @@ class PepSpider(scrapy.Spider):
     def parse_pep(self, response):
         content = response.css('section#pep-page-section section#pep-content')
         number, name = content.css('h1::text').get().strip().split(' – ')
+
         status = content.css('dl dt:contains("Status") + dd abbr::text').get()
         data = {
-            'number': number,
+            'number': int(number[-1]),
             'name': name,
             'status': status
         }

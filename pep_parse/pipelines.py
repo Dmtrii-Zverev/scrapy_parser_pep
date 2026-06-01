@@ -7,6 +7,9 @@ from pep_parse.constants import DOWNLOAD_DIR
 
 class PepParsePipeline:
 
+    def __init__(self):
+        DOWNLOAD_DIR.mkdir(exist_ok=True)
+
     def open_spider(self, spider):
         self.counts: defaultdict[str, int] = defaultdict(int)
 
@@ -16,11 +19,12 @@ class PepParsePipeline:
 
     def close_spider(self, spider):
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        DOWNLOAD_DIR.mkdir(exist_ok=True)
         filename_ = f'status_summary_{current_time}.csv'
         results_path = DOWNLOAD_DIR / filename_
         with open(results_path, 'w', encoding='utf-8') as f:
-            writer = csv.writer(f, delimiter=';')
-            writer.writerow(('Статус', 'Количество'))
-            writer.writerows(zip(self.counts, self.counts.values()))
-            writer.writerow(('Total', sum(self.counts.values())))
+            writer = csv.writer(f, dialect='excel', delimiter=';')
+            writer.writerows((
+                ('Статус', 'Количество'),
+                *self.counts.items(),
+                ('Total', sum(self.counts.values()))
+            ))
